@@ -119,7 +119,7 @@ public void doSomething(SomeObject obj){
 
 #### 4.创建对象数组时候抛出空指针
 
-#####4.1具体事例
+##### 4.1具体事例
 ```
 public class ResultList {
     public String name;
@@ -159,5 +159,96 @@ boll[0].name = "iiii";
 ```
 这种方式就是数据的定义和初始化的两种方式。
 
+#### 5.在Fragment中调用onCreate方法并找控件造成NullPointerException
+
+##### 5.1具体事例
+`Fragment`的`onCreate()`方法
+```
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    View something = findViewById(R.id.something);
+    something.setOnClickListener(new View.OnClickListener() { ... }); // NPE HERE
+
+    if (savedInstanceState == null) {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, new PlaceholderFragment()).commit();
+    }
+}
+```
+
+`Fragment`的布局
+```
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="packagename.MainActivity$PlaceholderFragment" >
+
+    <View
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/something" />
+
+</RelativeLayout>
+```
+
+##### 5.2分析
+首先我们看一张Fragment生命周期的图片
+
+![](https://i.stack.imgur.com/Z3B7j.png)
+
+可以知道`onCreate`方法在`onCreateView`方法之前执行。然后返回null。然后如果调用方法就造成了`NullPointerException`
+可以使用以下的方法进行
+```
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    Bundle savedInstanceState) {
+  View rootView = inflater.inflate(R.layout.fragment_main, container,
+      false);
+
+  View something = rootView.findViewById(R.id.something); // not activity findViewById()
+  something.setOnClickListener(new View.OnClickListener() { ... });
+
+  return rootView;
+}
+```
+我们等到布局已经创建之后进行`findViewById`就不会造成`NullPointerException`
+
+#### 6.使用RecyclerView造成的NullPointerException
+##### 6.1具体事例
+报错日志信息
+```
+java.lang.NullPointerException: Attempt to invoke virtual method 'void android.support.v7.widget.RecyclerView$LayoutManager.onMeasure(android.support.v7.widget.RecyclerView$Recycler, android.support.v7.widget.RecyclerView$State, int, int)' on a null object reference
+        at android.support.v7.widget.RecyclerView.onMeasure(RecyclerView.java:1764)
+        at android.view.View.measure(View.java:17430)
+```
+
+##### 6.2分析
+根据我们上面使用的方法，找到报错行文件。找到有可能发生`NullPointerException`的位置
+```
+void android.support.v7.widget.RecyclerView$LayoutManager.onMeasure
+```
+
+是没有提供`LayoutManager`造成的，所以我们需要做以下处理
+```
+// 还需要找到相应的recyclerView
+final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+recyclerView.setLayoutManager(layoutManager);
+```
+
 ### 参考
-[https://stackoverflow.com/questions/1922677/nullpointerexception-when-creating-an-array-of-objects](https://stackoverflow.com/questions/1922677/nullpointerexception-when-creating-an-array-of-objects)
+1. [https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it/218510#218510](https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it/218510#218510)
+
+2. [https://stackoverflow.com/questions/1922677/nullpointerexception-when-creating-an-array-of-objects](https://stackoverflow.com/questions/1922677/nullpointerexception-when-creating-an-array-of-objects)
+
+3. [https://stackoverflow.com/questions/23653778/nullpointerexception-accessing-views-in-oncreate](https://stackoverflow.com/questions/23653778/nullpointerexception-accessing-views-in-oncreate)
+
+4. [https://stackoverflow.com/questions/3988788/what-is-a-stack-trace-and-how-can-i-use-it-to-debug-my-application-errors](https://stackoverflow.com/questions/3988788/what-is-a-stack-trace-and-how-can-i-use-it-to-debug-my-application-errors)
