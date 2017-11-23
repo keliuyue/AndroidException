@@ -448,6 +448,7 @@ public class MainActivity extends Activity {
 ##### github原地址：https://github.com/keliuyue/AndroidException/blob/master/contents/java/NullPointerException.md
 
 ### 参考
+
 1. Android研发录
 
 1. [https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it/218510218510](https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it/218510#218510)
