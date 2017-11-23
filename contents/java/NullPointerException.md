@@ -15,7 +15,7 @@
 
 应用程序应该抛出该类的实例，指示其他对 null 对象的非法使用。
 
-#### 1.简单例子分析
+### 1.简单例子分析
 
 ##### 1.1 具体事例
 
@@ -47,7 +47,7 @@
 
 通过上面的代码，因为我们报错的方法是`getTitle`,然后这个方法返回的`String`值，如果为空的化，只有可能`title` 为空。所以可以了解到基本上就是`title` 为`null`
 
-#### 2.一连串exceptions的例子
+### 2.一连串exceptions的例子
 
 ##### 2.1具体事例
 
@@ -86,7 +86,7 @@ Caused by: java.lang.NullPointerException <-- 主要导致的Exception
 
 然后我们根据这个异常Log，我们可以定位到`Book.java`类中22行的`getId`方法。确定是这行导致的`NullPointerException` 。然后判断是否有值为`null` 。
 
-#### 3.方法中对象参数为空导致的NullPointerException
+### 3.方法中对象参数为空导致的NullPointerException
 ##### 3.1 具体事例
 
 ```
@@ -130,7 +130,7 @@ public void doSomething(SomeObject obj){
 }
 ```
 
-#### 4.创建对象数组时候抛出空指针
+### 4.创建对象数组时候抛出空指针
 
 ##### 4.1具体事例
 
@@ -177,7 +177,7 @@ boll[0].name = "iiii";
 
 这种方式就是数据的定义和初始化的两种方式。
 
-#### 5.在Fragment中调用onCreate方法并找控件造成NullPointerException
+### 5.在Fragment中调用onCreate方法并找控件造成NullPointerException
 
 ##### 5.1具体事例
 
@@ -245,7 +245,7 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
 
 我们等到布局已经创建之后进行`findViewById`就不会造成`NullPointerException`
 
-#### 6.使用RecyclerView造成的NullPointerException
+### 6.使用RecyclerView造成的NullPointerException
 
 ##### 6.1具体事例
 
@@ -273,7 +273,7 @@ layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 recyclerView.setLayoutManager(layoutManager);
 ```
 
-#### 7.findViewById方法引发的NullPointerException
+### 7.findViewById方法引发的NullPointerException
 
 ##### 7.1具体事例
 
@@ -433,7 +433,7 @@ public class MainActivity extends Activity {
 
 所以在我们使用控件的时候，如果是`findViewById`造成的`NullPointerException`,你就需要在布局文件中寻找是否有该控件和id。
 
-#### 总结
+### 总结
 
 `NullPointerException`发生的原因有很多种，我们也有相应的解决方法。主要的方式有：
 
@@ -449,7 +449,7 @@ public class MainActivity extends Activity {
 
 ### 参考
 
-1. Android研发录
+1. APP研发录
 
 1. [https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it/218510218510](https://stackoverflow.com/questions/218384/what-is-a-nullpointerexception-and-how-do-i-fix-it/218510#218510)
 
